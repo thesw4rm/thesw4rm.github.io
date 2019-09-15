@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html<%= config.language ? " lang=" + config.language.substring(0, 2) : ""%>>
+<%- include('_partial/head') %>
+<body class="max-width mx-auto px3 <%- theme.direction -%>">
+    <% if (is_post()) { %>
+            <%- include('_partial/post/actions_desktop') %>
+    <% } %>
+    <div class="content index py4">
+        <% if (!is_post()) { %>
+          <%- include('_partial/header') %>
+        <% } %>
+        <%- body %>
+        <% if (is_post()) { %>
+          <%- include('_partial/post/actions_mobile') %>
+        <% } %>
+        <%- include('_partial/footer') %>
+    </div>
+    <%- include('_partial/styles') %>
+    <%- include('_partial/scripts') %>
+</body>
+</html>
