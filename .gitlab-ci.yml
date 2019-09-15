@@ -14,4 +14,9 @@ pages:
     - public
   only:
     - web
+  tags:
+    - linux
+    - docker
+    - nodejs
+    
 
