@@ -17,4 +17,6 @@ pages:
       - public
   only:
     - master
-
+  tags:
+    - linux
+    - docker
