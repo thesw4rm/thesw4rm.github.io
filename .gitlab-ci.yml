@@ -5,4 +5,4 @@ deployment:
     - npm install -g hexo-cli
     - npm install
     - hexo generate
-    - cp -r public /var/www/html
+    - rsync -avr public/ /var/www/html/
