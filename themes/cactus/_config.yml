@@ -14,7 +14,7 @@ direction: ltr
 # navigation menu. Optionally, you can add translations for the 'Key' in
 # languages/o*.yml
 nav:
-  Home: /
+  Home: /about/
   About: /about/
   Articles: /archives/
   Projects: http://gitlab.com/thesw4rm
@@ -29,7 +29,7 @@ social_links:
   twitter: /
   facebook: /
   linkedin: /
-  mail: mailto:thesw4rm@pm.me
+  #mail: mailto:thesw4rm@pm.me
 
 # Customize the overview with displaying a tagcloud on the index page.
 # Options: https://hexo.io/docs/helpers.html#tagcloud
