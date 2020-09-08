@@ -1,4 +1,4 @@
-image: "node:10.22.0:debian-buster"
+image: "node:10.22.0:buster"
 
 deployment:
   script:
