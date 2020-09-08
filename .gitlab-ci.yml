@@ -2,6 +2,7 @@ image: "node:10.22.0-buster"
 
 deployment:
   script:
-    - npm install -g hexo
+    - npm install -g hexo-cli
+    - npm install
     - hexo generate
     - cp public /var/www/html
