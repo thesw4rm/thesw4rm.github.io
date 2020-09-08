@@ -9,7 +9,7 @@ Hi, I am a soon to graduate (or perhaps by the time you read this, already gradu
 
 # Projects
 
-Click the tab for my Gitlab repo. My Github has more stuff and can be found by clicking the icon above. 
+Click the [Projects](https://gitlab.com/thesw4rm) tab for my Gitlab repo. 
 
 1. [Command and Control via TCP Handshake](/2019/09/15/Command-and-Control-via-TCP-Handshake/)
     
