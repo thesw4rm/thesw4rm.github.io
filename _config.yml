@@ -12,8 +12,8 @@ language: en
 timezone: EST
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://nothereyet.com
-root: /nfqueue_c2
+url: http://thesw4rm.com
+root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 
@@ -77,4 +77,3 @@ theme: cactus
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
-  type:
