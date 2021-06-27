@@ -25,10 +25,7 @@ nav:
 # (see https://fontawesome.com/icons?d=gallery&s=brands);
 # only 'mail' is an exception.
 social_links:
-  github: http://gitlab.com/thesw4rm
-  twitter: /
-  facebook: /
-  linkedin: /
+  github: https://gitlab.com/thesw4rm
   #mail: mailto:thesw4rm@pm.me
 
 # Customize the overview with displaying a tagcloud on the index page.
