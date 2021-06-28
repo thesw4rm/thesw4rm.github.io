@@ -1,4 +1,4 @@
-image: "node:10.22.0-buster"
+image: "node:16.4.0"
 
 
 deployment:
