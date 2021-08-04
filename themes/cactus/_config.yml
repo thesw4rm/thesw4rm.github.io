@@ -70,7 +70,7 @@ logo:
   enabled: true
   width: 50
   height: 50
-  url: /avatar.jpg
+  url: /nfqueue_c2/avatar.jpg
   gravatar: false
 
 # Customize the favicons.
@@ -84,13 +84,13 @@ logo:
 #   - gravatar: whether to create a favicon from your Gravatar
 favicon:
   desktop:
-    url: /avatar.jpg
+    url: /nfqueue_c2/avatar.jpg
     gravatar: false
   android:
-    url: /avatar.jpg
+    url: /nfqueue_c2/avatar.jpg
     gravatar: false
   apple:
-    url: /avatar.jpg
+    url: /nfqueue_c2/avatar.jpg
     gravatar: false
 
 # The color scheme that should be used to highlight codeblocks.
